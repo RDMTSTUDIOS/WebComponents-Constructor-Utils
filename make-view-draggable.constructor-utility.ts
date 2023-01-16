@@ -1,7 +1,8 @@
 export default function MakeViewDraggable(view: HTMLElement)
 {
+    //===-----------MOUSE Version-------===//
     view.onmousedown = mouse_down;
-
+    
     function mouse_down(down_e: MouseEvent)
     {
         down_e.preventDefault();
@@ -14,7 +15,7 @@ export default function MakeViewDraggable(view: HTMLElement)
         function move(e: MouseEvent)
         {
             view.style.left = e.clientX + dx + 'px';
-            view.style.top = e.clientY + dy + 'px';
+            view.style.top  = e.clientY + dy + 'px';
         };
 
         function mouse_up()
@@ -23,4 +24,31 @@ export default function MakeViewDraggable(view: HTMLElement)
             document.removeEventListener('mousemove', move);
         };
     };
+    //===----------- ----------- -------===//
+
+    //===-------TOUCH-SCREEN Version-------===//
+    view.ontouchstart = touch_start;
+
+    function touch_start(touch_e: TouchEvent)
+    {
+        touch_e.preventDefault();
+        const dx = view.offsetLeft - touch_e.touches[0].clientX;
+        const dy = view.offsetTop  - touch_e.touches[0].clientY;
+
+        document.addEventListener('touchmove', swipe);
+        document.addEventListener('touchend', touch_end);
+
+        function swipe(e: TouchEvent)
+        {
+            view.style.left = e.touches[0].clientX + dx + 'px';
+            view.style.top  = e.touches[0].clientY + dy + 'px';
+        };
+
+        function touch_end()
+        {
+            document.removeEventListener('touchend', touch_end);
+            document.removeEventListener('touchmove', swipe);
+        };
+    }
+    //===------- ------------------ -------===//
 }
